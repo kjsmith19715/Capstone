@@ -2,9 +2,9 @@
 #-------------------------LOAD DATA ---------------------------------------------------------
 # Load the confusion matrix from the .rds file for the Logistic Regression Model
 confusion_matrix_glm <- readRDS("confusion_matrix_glm.rds")
-
-# Load the ROC curve object
 roc_curve_glm <- readRDS("roc_curve_glm.RDS")
+confusion_matrix_svm <- readRDS("confusion_matrix_svm.rds")
+roc_curve_svm <- readRDS("roc_curve_svm.RDS")
 
 
 #-------------------------DEFINE FUNCTIONS ---------------------------------------------------------
@@ -31,4 +31,15 @@ plot_confusion_heatmap <- function(confusion_matrix, title = "Confusion Matrix H
   
   # Plot ROC curve
   plot(roc_curve_glm, main = "ROC Curve - Logistic Regression Model", col = color, lwd = 2)
+  
+  #-------------------------GENERATE PLOTS FOR SVM------------------------------
+  
+  color <- "green"
+  
+  # Generate heatmap of confusion matrix for Logistic Regression Model
+  plot_confusion_heatmap(confusion_matrix_svm, title = "Confusion Matrix Heatmap - SVM", "white", color)
+  Sys.sleep(1)
+  
+  # Plot ROC curve
+  plot(roc_curve_svm, main = "ROC Curve - SVM", col = color, lwd = 2)
 

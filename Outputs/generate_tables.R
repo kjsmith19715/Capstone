@@ -2,6 +2,8 @@
 anova_glm_df <- readRDS("anova_df.rds")
 read_csv("auc_output_glm.csv")
 confusion_matrix_glm <- readRDS("confusion_matrix_glm.rds")
+read_csv("auc_output_svm.csv")
+confusion_matrix_glm <- readRDS("confusion_matrix_svm.rds")
 
 # Prepare LaTeX table function
 generate_confusion_matrix <- function(cm, title = "Confusion Matrix") {
