@@ -1,19 +1,3 @@
-library(tidyverse)
-library(haven)
-library(dplyr)
-library(fastDummies)
-library(nnet)
-library(caret)
-library(classpackage)
-library(pROC)
-library(ggplot2)
-library(reshape2)
-library(caret)
-library(e1071)
-
-# Set working directory
-setwd("~/Capstone/")
-getwd()
 
 # Retrieve data
 training_data <- read_csv("training_data.csv")
@@ -33,12 +17,12 @@ view(test_data)
 
 # Create ROC curve
 roc_curve <- roc(test_data$diagnosisAD, test_data$predicted_probability)
+saveRDS(roc_curve, file = "roc_curve_svm.RDS")
 
-# Plot ROC curve
-plot(roc_curve, main = "ROC Curve - CSF Biomarkers", col = "purple")
-
-# Print AUC
-print(paste("AUC - CSF Biomarkers:", auc(roc_curve)))
+# Calculate AUC
+auc_value <- auc(roc_curve)
+print(paste("AUC", auc_value))
+write(paste("AUC:", auc_value), file = "auc_output_svm.csv")
 
 # Convert predicted probabilities to predicted classes
 predicted_classes <- ifelse(test_data$predicted_probability > .3, 1, 0)
@@ -47,26 +31,10 @@ predicted_classes <- ifelse(test_data$predicted_probability > .3, 1, 0)
 confusion_matrix <- confusionMatrix(as.factor(predicted_classes), as.factor(test_data$diagnosisAD))
 print(confusion_matrix)
 
-# Reshape the data for ggplot2
-confusion_matrix_table <- as.data.frame(confusion_matrix$table)
-confusion_matrix_table <- melt(confusion_matrix_table)
+# Convert predicted probabilities to predicted classes
+predicted_classes <- ifelse(test_data$predicted_probability > .2, 1, 0)
 
-# Create the plot
-# Plot the confusion matrix
-heatmap_data <- as.data.frame(confusion_matrix$table)
-colnames(heatmap_data) <- c("Predicted", "Actual", "Freq")
-heatmap_data$Actual <- factor(heatmap_data$Actual, levels = c(1, 0))
-heatmap_data$Predicted <- factor(heatmap_data$Predicted, levels = c(0, 1))
-
-ggplot(heatmap_data, aes(x = Actual, y = Predicted, fill = Freq)) +
-  geom_tile() +
-  scale_fill_gradient(low = "white", high = "purple") +
-  geom_text(aes(label = Freq), vjust = 1) +
-  labs(title = "Confusion Matrix Heatmap")
-
-# ggplot(data = confusion_matrix_table, aes(x = Reference, y = Prediction)) +
-#   geom_tile(aes(fill = value), color = "white") +
-#   scale_fill_gradient(low = "white", high = "purple") +
-#   geom_text(aes(label = value), color = "black") +
-#   theme_minimal() +
-#   labs(title = "Confusion Matrix", x = "Actual", y = "Predicted")
+# Create a confusion matrix
+confusion_matrix <- confusionMatrix(as.factor(predicted_classes), as.factor(test_data$diagnosisAD))
+saveRDS(confusion_matrix, file = "confusion_matrix_svm.rds")
+print(confusion_matrix)
