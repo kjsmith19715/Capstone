@@ -12,6 +12,7 @@ library(reshape2)
 library(caret)
 library(mice)
 library(DMwR2)
+library(e1071)
 
 # Set working directory
 setwd("~/Capstone/")
